@@ -1,0 +1,89 @@
+@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Zealand_Lokale_Booking.Pages.Booking.MyRoomsModel
+@{
+    ViewData["Title"] = "Mine Lokaler";
+    Layout = "_Layout";
+}
+
+<h1>Mine Lokaler</h1>
+<p>Her er en liste over de lokaler, du har booket:</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Lokale</th>
+            <th>Starttid</th>
+            <th>Sluttid</th>
+            <th>Status</th>
+            <th>Handling</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.ActiveBookings != null && Model.ActiveBookings.Any())
+        {
+            @foreach (var booking in Model.ActiveBookings)
+            {
+                <tr>
+                    <td>@booking.Room.RoomName</td>
+                    <td>@booking.StartTime.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>@booking.EndTime.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>
+                        <span class="badge bg-success">Aktiv</span>
+                    </td>
+                    <td>
+                        <!-- Knap der åbner modal -->
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@booking.Room.RoomId">
+                            Annuller
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">Ingen aktive bookinger.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal for annullering -->
+@foreach (var booking in Model.ActiveBookings)
+{
+    <div class="modal fade" id="deleteModal-@booking.Room.RoomId" tabindex="-1" aria-labelledby="deleteModalLabel-@booking.Room.RoomId" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel-@booking.Room.RoomId">Bekræft Annullering</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Er du sikker på, at du vil annullere bookingen for @booking.Room.RoomName?
+                </div>
+                <div class="modal-footer">
+                    <form method="post" asp-page-handler="DeleteRoom">
+                        <input type="hidden" name="roomId" value="@booking.Room.RoomId" />
+                        <button type="submit" class="btn btn-danger">Bekræft</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuller</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,140 @@
+@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Zealand_Lokale_Booking.Pages.Booking.BookRoomsModel
+@{
+    ViewData["Title"] = "Book Lokaler";
+    Layout = "_Layout";
+}
+
+<h1>Book Lokaler</h1>
+
+<!-- Filter-funktion -->
+<div class="mb-3">
+    <label for="filterDate" class="form-label">Filtrer efter dato:</label>
+    <input type="date" id="filterDate" class="form-control" onchange="FilterBookings()" />
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Lokale Navn</th>
+                <th>Lokale Type</th>
+                <th>Status</th>
+                <th>Handling</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in Model.Rooms)
+            {
+                <tr>
+                    <td>@room.RoomName</td>
+                    <td>@room.RoomType</td>
+                    <td>@(room.IsBooked ? "Booket" : "Tilgængelig")</td>
+                    <td>
+                        @if (room.RoomType == "Auditorium" && User.Claims.FirstOrDefault(c => c.Type == "role")?.Value != "Teacher")
+                        {
+                            <button class="btn btn-secondary btn-sm" disabled>Kun for lærere</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#roomModal-@room.RoomId">
+                                Se mere info
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@foreach (var room in Model.Rooms)
+{
+    <div class="modal fade" id="roomModal-@room.RoomId" tabindex="-1" aria-labelledby="roomModalLabel-@room.RoomId" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomModalLabel-@room.RoomId">@room.RoomName - Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Kapacitet:</strong> @room.Capacity</p>
+                    <p><strong>Type:</strong> @room.RoomType</p>
+                    <p><strong>Status:</strong> @(room.IsBooked ? "Booket" : "Tilgængelig")</p>
+                    <form method="post" asp-page-handler="BookRoom">
+                        <input type="hidden" name="roomId" value="@room.RoomId" />
+                        <label for="bookingDate" class="form-label">Dato:</label>
+                        <input type="date" id="bookingDate" name="bookingDate" class="form-control" required />
+                        <label for="startTime" class="form-label">Starttid:</label>
+                        <select id="startTime" name="startTime" class="form-control" required>
+                            @for (var hour = 8; hour < 18; hour++) // Begrænset til 08:00 - 18:00
+                            {
+                                for (var minute = 0; minute < 60; minute += 15)
+                                {
+                                    var time = new TimeSpan(hour, minute, 0);
+                                    <option value="@time">@time.ToString(@"hh\:mm")</option>
+                                }
+                            }
+                        </select>
+                        <label for="intervalMinutes" class="form-label">Varighed:</label>
+                        <select id="intervalMinutes" name="intervalMinutes" class="form-control" required>
+                            @if (room.RoomType == "Auditorium")
+                            {
+                                <option value="30">30 minutter</option>
+                                <option value="60">60 minutter</option>
+                            }
+                            else if (room.RoomType == "Klasselokale")
+                            {
+                                <option value="60">1 time</option>
+                                <option value="120">2 timer</option>
+                                <option value="180">3 timer</option>
+                                <option value="480">Hele dagen</option>
+                            }
+                            else if (room.RoomType == "Gruppe")
+                            {
+                                <option value="60">1 time</option>
+                                <option value="120">2 timer</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-success mt-2">Book Lokale</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

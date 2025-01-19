@@ -1,0 +1,26 @@
+@page
+@model Zealand_Lokale_Booking.Pages.StudentDashboardModel
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<h1>Student Dashboard</h1>
+<p>Velkommen til dit dashboard, @User.Identity.Name!</p>
+
+@if (Model.Notifications.Any())
+{
+    <h3>Dine notifikationer:</h3>
+    <ul>
+        @foreach (var notification in Model.Notifications)
+        {
+            <li>@notification.Message</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Ingen nye notifikationer.</p>
+}
+
+
+

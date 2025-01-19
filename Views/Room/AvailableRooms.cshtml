@@ -1,0 +1,34 @@
+@model IEnumerable<ZealandLokaleBooking.Models.Room>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ledige Lokaler</title>
+</head>
+<body>
+<h1>Ledige Lokaler</h1>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Lokale</th>
+        <th>Kapacitet</th>
+        <th>Type</th>
+        <th>Book</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var room in Model)
+    {
+        <tr>
+            <td>@room.RoomName</td>
+            <td>@room.Capacity</td>
+            <td>@room.RoomType</td>
+            <td>
+                <a href="/Room/BookRoom?roomId=@room.RoomId" class="btn btn-primary">Book</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</body>
+</html>

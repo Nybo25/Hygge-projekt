@@ -1,0 +1,27 @@
+.navbar-brand img {
+  height: 40px;
+}
+
+.navbar {
+  background-color: #fff488;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  font-weight: bold;
+  color: #333 !important;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}

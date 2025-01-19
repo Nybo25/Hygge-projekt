@@ -1,0 +1,167 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Zealand Lokale Booking</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg" style="background-color: #fff488;">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="@(
+        User.Identity != null && User.Identity.IsAuthenticated
+        ? (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "Student"
+        ? "/StudentDashboard"
+        : "/TeacherDashboard")
+        : "/")">
+            <img src="/images/Zealand_Logo.png" alt="Zealand Logo" style="height: 40px; margin-right: 10px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                var userRole = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+
+                if (userRole == "Student")
+                {
+                <!-- Menu for studerende -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/Booking/BookRooms">Book Lokaler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Booking/MyRooms">Mine Lokaler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Account/Profile">Min Profil</a>
+                </li>
+                }
+                else if (userRole == "Teacher")
+                {
+                <!-- Menu for lærere -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/Booking/BookRooms">Book Lokaler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Booking/MyRooms">Mine Lokaler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Booking/ManageRooms">Administrer Lokaler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Account/Profile">Min Profil</a>
+                </li>
+                }
+                }
+                else
+                {
+                <!-- Menu for ikke-loggede brugere -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Forside</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Contact">Kontakt</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/About">Om Os</a>
+                </li>
+                }
+            </ul>
+            <div class="navbar-buttons d-flex gap-2">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                <!-- Hvis brugeren er logget ind -->
+                <a href="/Account/Logout" class="btn btn-secondary">Log Ud</a>
+                }
+                else
+                {
+                <!-- Hvis brugeren ikke er logget ind -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal">Opret Bruger</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                }
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted text-center py-3">
+    <div class="container">
+        &copy; 2024 - Zealand Lokale Booking
+    </div>
+</footer>
+
+<!-- Modaler -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Opret Bruger</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/Account/Register">
+                    <div class="mb-3">
+                        <label for="registerFirstName" class="form-label">Fornavn</label>
+                        <input type="text" class="form-control" id="registerFirstName" name="FirstName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerLastName" class="form-label">Efternavn</label>
+                        <input type="text" class="form-control" id="registerLastName" name="LastName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" name="Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPhoneNumber" class="form-label">Tlfnr</label>
+                        <input type="tel" class="form-control" id="registerPhoneNumber" name="PhoneNumber" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Adgangskode</label>
+                        <input type="password" class="form-control" id="registerPassword" name="Password" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Opret Bruger</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/Account/Login" method="post">
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="Email" name="Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Password" class="form-label">Adgangskode</label>
+                        <input type="password" class="form-control" id="Password" name="Password" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

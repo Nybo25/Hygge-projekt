@@ -1,0 +1,80 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+ViewData["Title"] = "Velkommen";
+Layout = "_Layout";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+<div class="alert alert-success">
+    @TempData["SuccessMessage"]
+</div>
+}
+
+<div class="content">
+    <h1>Velkommen til Zealand Lokale Booking!</h1>
+    <p>Dette er startsiden for din applikation.</p>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Opret Bruger</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/Account/Register">
+                    <div class="mb-3">
+                        <label for="registerFirstName" class="form-label">Fornavn</label>
+                        <input type="text" class="form-control" id="registerFirstName" name="FirstName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerLastName" class="form-label">Efternavn</label>
+                        <input type="text" class="form-control" id="registerLastName" name="LastName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" name="Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPhoneNumber" class="form-label">Tlf nr</label>
+                        <input type="text" class="form-control" id="registerPhoneNumber" name="PhoneNumber" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Adgangskode</label>
+                        <input type="password" class="form-control" id="registerPassword" name="Password" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Opret Bruger</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/Account/Login">
+                    <div class="mb-3">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" name="Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Adgangskode</label>
+                        <input type="password" class="form-control" id="loginPassword" name="Password" required />
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
