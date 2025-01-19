@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Zealand_Lokale_Booking.props" />
+</Project>
